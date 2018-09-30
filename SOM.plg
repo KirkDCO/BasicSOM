@@ -1,0 +1,60 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: SOM - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DB.tmp" with contents
+[
+/nologo /ML /W3 /GR /GX /O2 /I "d:\temp\dataset" /I ".\DataSet" /I ".\UtilityClasses" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Release/" /Fp"Release/SOM.pch" /Yu"stdafx.h" /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\Temp\Kirk\SOM\SOM.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DB.tmp" 
+Creating temporary file "C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DC.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"Release/SOM.pdb" /machine:I386 /out:"Release/SOM.exe" 
+.\Release\CExceptionRKD.obj
+.\Release\CSOM2DLatticeTopology.obj
+.\Release\CSOM3DLatticeTopology.obj
+.\Release\CSOMCellDouble.obj
+.\Release\CSOMCellDoubleFactory.obj
+.\Release\CSOMLattice.obj
+.\Release\CSOMTorusLatticeTopology.obj
+.\Release\DataSet.obj
+.\Release\Observation.obj
+.\Release\SOM.obj
+.\Release\StdAfx.obj
+.\Release\SOM.res
+]
+Creating command line "link.exe @C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DC.tmp"
+<h3>Output Window</h3>
+Compiling...
+SOM.cpp
+Linking...
+Creating temporary file "C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DE.tmp" with contents
+[
+/nologo /o"Release/SOM.bsc" 
+.\Release\StdAfx.sbr
+.\Release\CExceptionRKD.sbr
+.\Release\CSOM2DLatticeTopology.sbr
+.\Release\CSOM3DLatticeTopology.sbr
+.\Release\CSOMCellDouble.sbr
+.\Release\CSOMCellDoubleFactory.sbr
+.\Release\CSOMLattice.sbr
+.\Release\CSOMTorusLatticeTopology.sbr
+.\Release\DataSet.sbr
+.\Release\Observation.sbr
+.\Release\SOM.sbr]
+Creating command line "bscmake.exe @C:\DOCUME~1\Susan\LOCALS~1\Temp\RSP1DE.tmp"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+SOM.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

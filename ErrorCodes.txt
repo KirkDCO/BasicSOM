@@ -1,0 +1,11 @@
+101	CSOMLattice::Initialize					An unknown error occured during lattice cell construction.
+102 CSOMLattice::Train						Unknown error retrieving random data cell for training.
+103 CSOMLattice::Train						Unknown error adjusting cell weights.
+104	CSOMLattice::GetCellMembership			Unknown error retrieving data cell or evaluating membership.
+105	CSOMLattice::Train						Lattice not initialized.
+
+201	CSOMDoubleFactory::GetRandomCell		Unknown error accessing DataSet.
+202	CSOMDoubleFactory::GetRandomDataCell	Unknown error accessing DataSet.
+203	CSOMDoubleFactory::GetDataCellByIndex	Unknown error accessing DataSet.
+
+301	CSOMCellDouble::GetCellWeights			Unknown error retrieving cell weights.

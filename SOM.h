@@ -1,0 +1,12 @@
+
+#if !defined(AFX_SOM_H__E31FC0FF_D687_431C_99FE_124403C311C5__INCLUDED_)
+#define AFX_SOM_H__E31FC0FF_D687_431C_99FE_124403C311C5__INCLUDED_
+
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
+
+#include "resource.h"
+
+
+#endif // !defined(AFX_SOM_H__E31FC0FF_D687_431C_99FE_124403C311C5__INCLUDED_)

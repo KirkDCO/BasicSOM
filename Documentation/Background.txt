@@ -1,0 +1,149 @@
+﻿Background
+
+In developing my own version of the SOM, I found myself faced by some choices.  The first was the structure of the SOM lattice itself.  Most implementations have a lattice which consists of a 2 dimensional grid.  This serves most purposes quite well but is not universally applicable.  Often a structure of this sort will be impacted by edge effects in which outliers tend to cluster at the edges or corners.  One application involves the mapping of the surfaces of molecules in order to provide a 2D visualization of properties at the surface.  This is essentially attempting to map a continuous surface and 2D grids can be problematic.  Rather, a torus is used which can be unfolded and viewed as a 2D grid, without the edge effects.  This can be taken further – a 3D lattice, the surface of a sphere, and even an adaptive topology.  
+
+Base classes
+
+This dilemma led me to develop a few base classes which I felt captured the essence of the SOM.  I attempted to apply some standard design patterns in order to allow flexibility in the construction of the SOM.
+
+CSOMLattice
+	This class is the SOM lattice itself.  It contains the primary functionality of the class, the nodes of the lattice, the training protocol, etc.  In retrospect, I think I would make this into ISOMLattice such that various training methods and lattice behaviors would be allowed.
+
+CSOMLatticeSettings
+	This class merely contains all the standard settings for a CSOMLattice.  It allows me to set the properties of my SOM up front and assign them with a single function call.
+
+ISOMLatticeTopology
+	This pure virtual class defines an interface for the topology of the lattice.  Its role is to contain the topological structure of the lattice and thus know the relationships between nodes.  The CSOMLattice object asks the ISOMLatticeTopology the distance between nodes during the training process.
+
+ISOMCell
+	The ISOMCell interface allows cells to take on any representation.  Typically, I’ve seen representations which are merely vectors of floating point numbers.  
+Suppose, however, that I have a very non-standard representation that doesn’t fit this method.  Again, many representations of small molecules are quite unusual.  The role of the ISOMCell is to know how to adjust itself during training and also has the ability of measure similarity to another cell.  I use the later as a method to decide winning nodes:  I take an observation from the data space I’m trying to model, convert it to a Cell, and use that for measuring distances to SOM cells/nodes.
+
+ISOMCellFactory
+	As mentioned, I always have to convert data observations into SOM cells.  The ISOMCellFactory interface defines those functions necessary to convert any data representation into an ISOMCell.  Effectively, thins acts to convert a file with my data into a Lattice of SOM Cells/nodes. 
+ 
+CExceptionRKD
+	This is an exception class I developed which I’ve used a few times in other project.  Very inconsequential.
+
+Dataset and Observation
+	These classes are very old and merely allow me to load a comma separated data file.  They have a few hardwired dependencies:
+    • Data must be in a CSV file.
+    • The first row contains the names of the columns – they are not used
+    • It doesn’t tolerate missing values
+    • It requires floating point values
+
+The project I’ve developed uses the DataSet as a simple example.  By deriving from the ISOMCellFactory, you can easily use any data class – or not – that you want.
+
+
+
+The project I’ve put together is a very simple application that could be improved many times over.  Nonetheless, it illustrates the basic idea.  Here’s the main code with some comments.  There is other code that does some basic drawing and record keeping, but it is simple to understand.
+
+
+void StartSOM()
+{	
+
+A couple of text files are created – a log file and the TrainedSOM file.  The purpose of the latter is to allow you to write out the SOM once it is trained.  Once written out, you can read it back in for use at a later time.  I’ve got the code in place, but have commented out anything that writes or reads the TrainedSOM.
+
+	ofstream SOMlog("C:\\temp\\SOMlog.txt");
+//	ofstream SOMout("C:\\temp\\TrainedXSOM.csv");
+
+
+	long i,  seed;		
+
+	//seed the random number generator
+	seed = static_cast<long>(time( NULL ) );
+	srand( seed );
+	SOMlog << "Seed: " << seed << endl;
+
+	Variables for the DataSet are created and the DataSet loaded from the CSV file.  NOTE that this assumes the presence of a particular data file, Random4.csv, at a particular location, c:\temp.
+
+//get the dataset going
+	DataSet SOMData;
+//	DataSet TrainedSOM;
+
+	SOMlog << "Begin LoadDataset" << endl;
+	SOMlog.flush();
+	SOMData.LoadDataSet("c:\\temp\\Random4.csv");
+//	TrainedSOM.LoadDataSet("c:\\temp\\TrainedSOM_2D_50x50.csv", numObs, numDes);
+	
+This creates the topology.  You can easily change the CSOM2DLatticeTopology declaration to any object derived from ISOMLatticeTopology.  I’ve included a 3D and torroidal topology object which I’ve validated.
+
+	//create 2D topology
+	SOMlog << "Begin Create topology obj" << endl;
+	SOMlog.flush();
+	CSOM2DLatticeTopology SOMTopology(10,10);
+
+Make the factory which will make the SOM cells/nodes.
+
+	//create a factory
+	SOMlog << "Begin create factory" << endl;
+	SOMlog.flush();
+//	CSOMCellDoubleFactory CellFactory(&TrainedSOM);
+	CSOMCellDoubleFactory CellFactory(&SOMData);
+
+Here I set the specific settings.  The InitMethod consists of SOMInit_Random that initializes the SOM cells with random values that are limited by the max and min of the DataSet, SOMInit_RandomData that picks data points at random from the DataSet to initialize the SOM noes, SOMInit_DataSequential that uses the DataSet values in the order they occur – this one allows you to reproduce a previously trained SOM that was saved.
+
+The TotalIterations define the number of observations selected during training.  TrainingStepSize defines how many iterations are performed before pausing the training.  This lets you do some things during the training process like draw some pretty pictures.
+ 
+	//set the settings
+	CSOMLatticeSettings SOMSettings;	//make a settings object
+	SOMSettings.CellFactory (&CellFactory);	//set the factory
+	SOMSettings.LatticeTopology( dynamic_cast<ISOMLatticeTopology *>(&SOMTopology)); //set the topology obj.
+	SOMSettings.InitMethod( SOMLatticeSettings::SOMInit_Random);	//set the data initialization sampling method
+	SOMSettings.TotalIterations(10000);	//set the total number of training sampling iterations
+	SOMSettings.TrainingStepSize(500);	//set the number of steps to take before allowing an update
+
+	//create a lattice using the above settings
+	SOMlog << "Begin create lattice" << endl;
+	SOMlog.flush();
+	CSOMLattice SOM(&SOMSettings);
+	pSOM = &SOM;  //set the global for drawing purposes
+
+	SOMlog << "Begin training" << endl;
+	SOMlog.flush();
+
+	i=0;  //iteration counter for logging
+	InvalidateRect(temphWnd, NULL, TRUE);
+	UpdateWindow(temphWnd);
+
+The way this code is set up, it will stop every 500 training iterations and come back to this code until the training is complete.  I use this option to allow redrawing the screen.
+	//train it
+	while (SOM.Train()) //when it runs out of iterations, it will return false
+	{
+		i+=500;
+		Sleep(0);  //used to delay the drawing
+		SOMlog << "Iteration: " << i << endl;//The SOM will return true once every TrainingStepSize iterations for visual updates etc.
+		SOMlog.flush();	
+		//this will call WM_PAINT which will render the map
+		InvalidateRect(temphWnd, NULL, FALSE);
+		UpdateWindow(temphWnd);
+	};
+
+	pSOM = 0;  //reset the global pointer to null
+
+All done!  The following code will write out the SOM as it exists so that I can read it back in later.  Again, there are some hardcoded items here, such as the presence of two column headers, that should be changed.  I just haven’t done it yet.
+	//persist the trained SOM
+//	const CSOMCellDouble * tempCell;
+//	vector<double> weights;
+
+	//write out the cell weights to preserve the trained SOM
+//	SOMout << "Descr1,Descr2" << endl;
+
+	//step through each cell and write out the weights
+	//if I set this as the data set to use for a factory object, and specify
+	//SOMInit_DataSequential as the InitMethod in the settings object, 
+	//I can recreate the saved SOM for later use
+//	for (i=0; i<SOM.CellCount(); i++)
+//	{
+//		tempCell = dynamic_cast<const CSOMCellDouble *>(SOM.GetCell(i));
+//		tempCell->GetCellWeights(&weights);
+
+//		for (j=0; j<weights.size(); j++)
+//		{
+//			SOMout << weights[j];
+//			if (j<weights.size()-1)
+//				SOMout << ",";
+//		}
+//		SOMout << endl;
+//	}	
+}

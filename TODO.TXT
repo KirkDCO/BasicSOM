@@ -1,0 +1,63 @@
+To Do List
+7 April 2004
+
+
+1)  Include proper exception handling.  Also include error codes in documentation.
+				DONE
+
+2)	Method to persist and restore. 				
+				Gave CSOMDouble GetCellWeights function.  By including this in 
+				the derived class, no additional hierarchy (for the return of weights)
+				is needed and the user is free to manipulate and write out the results 
+				as desired.  By keeping the written SOM cells in the same format as
+				that expected by the corresponding factory object, the SOM can be recalled
+				by using the standard procedure with the InitMethod of the Settings object 
+				set to SOMInit_DataSequential.  
+
+3)	Method to write to disk for external visualization.
+	-Based on Node location in lattice - DONE each node is listed with the observations which are closest to it
+	-Based on Node weights - DONE
+
+4)  Method to extract details for internal visualization.
+	-Based on Node location in lattice -DONE see above
+	-Based on Node weights - DONE
+
+5)	Evaluation of a non-training data set and externalization of results.
+				DONE
+
+6)	Generalize CSOMCellDouble to arbitray number of dimensions
+				Class is general for any number of dimensions but has a 
+				dependency on the dataset type:  DataSet.  The dependency is actually associated
+				with the factory class CSOMCellDoubleFactory and is unavoidable.  The expectation is
+				that a developer/user will subclass ISOMCell and ISOMCellFactory for compatability 
+				with the dataset of choice.
+
+7)	Coordinate topology dimensions and Settings object NumberOfCells
+				Topology class was given NumberOfCells() function and NumberOfCells
+				data member removed from LatticeSettings structure.  All references
+				to LatticeSettings.NumberOfCells redirected to Topology.NumberOfCells()
+
+8)	Wrap LatticeSettings variables into Get/Set type routines.
+				A pain, but overloaded get/set functions are done.
+
+9)	Allow clamping of extremes on doubleCell initialization - each dimension requires a unique clamp
+				DoubleFactory is based upon the DataSet object and enforces clamping
+				based on the columns of the DataSet.  The number of dimensions are equivalent
+				to the number of columns and the max and min within the column define the clamps.
+
+10)	Need a flag in the CSOMLattice to signify that it is ready to use.  Has it been initialized successfully??
+				DONE
+
+11) Windows Visualizations
+	-Each cell's 1D/2D/3D position based upon its weights (floating net)
+	-cells in static location sized by number of members
+	-cells in static location colored by representation
+		-include contour lines showing occupancy of cells
+
+12) True Windows application
+	-settings by dialogs
+	-input/output files by dialogs
+
+13) Save restart files
+	-current functionality allow persistence of trained SOM and partial training with restarts 
+		- save the SOM at intermediate steps with enough information for a proper restart (restart script)
