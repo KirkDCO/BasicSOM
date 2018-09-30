@@ -2,7 +2,7 @@
 
 This project is a very simple example of a self-organizing map implementation that could be improved many times over.  Nonetheless, it illustrates the basic idea.  
 
-Note that this code is _very_ old and goes back to when I did C++ on Windows using Visual Studio.  I hope to update this code at some point, but for now...
+Note that this code is _very_ old and goes back to when I did C++ on Windows using Visual Studio.  I've tested it on a Windows 7 machine, and it runs, but in some tests, the graphics don't draw properly.  (All the drawing code is Win32 API.)  There are some hardcoded dependencies (I know, I know) so it expects the Random4.csv file to be in C:\Temp on a Windows machine.  I hope to update this code at some point to be more general and Linux focused, but for now...
 
 **Background**
 
